@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/database/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git@github.com-neko:neko12377/zing-database.git"
@@ -14,5 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "mysql2": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.13",
+    "typescript": "^4.3.5"
   }
 }
