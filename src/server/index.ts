@@ -1,4 +1,5 @@
 import {IncomingMessage, ServerResponse} from "http";
+import ErrnoException = NodeJS.ErrnoException;
 
 const http = require("http");
 const fs = require("fs");
@@ -19,21 +20,24 @@ const requestListener = (req: IncomingMessage, res: ServerResponse) => {
     const submit = () => {
         const body: any[] = [];
         req.on("data", (chunk) => {
-            console.info(chunk, typeof chunk);
             body.push(chunk)
         })
         req.on("end", () => {
             const parsedBody = Buffer.concat(body).toString();
             const message = parsedBody.split("=")[1];
-            fs.writeFileSync("message.txt", message);
+            fs.writeFile("message.txt", message, (error: ErrnoException) => {
+                res.statusCode = 302;
+                res.setHeader("Location", "/");
+                return res.end();
+            });
         });
-        res.statusCode = 302;
-        res.setHeader("Location", "/");
     }
-    url === "/message" && method === "POST" && submit();
-    res.setHeader("ContentType", "text/html");
-    res.write(pickResponse(url ?? "/"))
-    res.end();
+    const defaultResponse = () => {
+        res.setHeader("ContentType", "text/html");
+        res.write(pickResponse(url ?? "/"))
+        res.end();
+    }
+    url === "/message" && method === "POST" ? submit() : defaultResponse();
 }
 
 const server = http.createServer(requestListener);
